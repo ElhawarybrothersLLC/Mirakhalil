@@ -1,0 +1,18 @@
+# Base44 development environment for this project.
+# The site is a single static index.html; it is served straight from the
+# cloned source (bind-mounted read-only) so edits show up on refresh.
+services:
+  web:
+    image: nginx:alpine
+    restart: on-failure
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/usr/share/nginx/html:ro
+      - ./nginx.base44.conf:/etc/nginx/nginx.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
